@@ -2,6 +2,7 @@
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+import pprint
 import numpy as npy
 import pandas as pd
 from datetime import date
@@ -13,6 +14,7 @@ URI_GET_MOVIES = '/Cartelera.aspx/GetNowPlayingByCity'
 
 
 CountryList = ['gt','sv','hn','cr','pa']
+#CountryList = ['gt']
 EndPoint = ''
 
 #Obtiene Sucursales por paises
@@ -51,7 +53,7 @@ def GetMoviesByCinemaBranchAndCountry(CinemaBranch, Country):
 
 #Obtiene las peliculas del dia actual
 def filterTodayMovies(data):
-  objMovie = next(filter(lambda movies: date.today().day in movies["ShowtimeDate"], data), None)
+  objMovie = next(filter(lambda movies: str(date.today().day) in movies["ShowtimeDate"], data), None)
   if objMovie != None:
     return objMovie["Movies"]
   else:
@@ -71,8 +73,10 @@ def DataCollectCinepolis():
     for country in CountryList:
 
         CinemaBranches = GetCinemasBranchByCountry(country)
+        pprint.pprint(CinemaBranches)
         BranchsData = pd.DataFrame(CinemaBranches)
-
+        pprint.pprint(BranchsData)
+        pprint.pprint(BranchsData["Clave"])
         Movies = BranchsData["Clave"].map(lambda Branch: GetMoviesByCinemaBranchAndCountry(Branch,country))
         Cinemas = list(map(lambda x: x['d']['Cinemas'], Movies))
 
@@ -85,7 +89,9 @@ def DataCollectCinepolis():
         MoviesData['Title'] = MoviesData["TodayMovies"].apply(lambda todaysMovie: todaysMovie['Title'])
         MoviesData["Hours"] = MoviesData["TodayMovies"].apply(lambda todaysMovie: getAllHours(todaysMovie['Formats']))
         MoviesData = MoviesData.drop(columns=['TodayMovies'])
-        MoviesData.to_csv('Cinepolis-'+ country +'-Data-Collection-'+date.today().day+'.csv', sep=';', encoding='utf-8', index=False)
+        MoviesData.to_csv('Cinepolis-'+ country +'-Data-Collection-'+str(date.today().day)+'.csv', sep=';', encoding='utf-8', index=False)
+
+
 
 
 

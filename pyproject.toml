@@ -8,6 +8,8 @@ authors = ["Esperanza Dueñas <esperanzaduenas008@gmail.com>"]
 python = "^3.10"
 selenium = "^4.4.0"
 webdriver-manager = "^3.8.3"
+numpy = "^1.23.2"
+pandas = "^1.4.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

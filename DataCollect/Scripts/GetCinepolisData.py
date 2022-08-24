@@ -85,7 +85,7 @@ def DataCollectCinepolis():
         MoviesData['Title'] = MoviesData["TodayMovies"].apply(lambda todaysMovie: todaysMovie['Title'])
         MoviesData["Hours"] = MoviesData["TodayMovies"].apply(lambda todaysMovie: getAllHours(todaysMovie['Formats']))
         MoviesData = MoviesData.drop(columns=['TodayMovies'])
-        MoviesData.to_csv('Cinepolis-'+ country +'-Data-Collection-'+str(date.today().day)+'.csv', sep=';', encoding='utf-8', index=False)
+        MoviesData.to_csv('Cinepolis-'+ country +'-Data-Collection-'+str(date.today().day)+'.csv', sep=',', encoding='utf-8', index=False)
 
 
 DataCollectCinepolis()

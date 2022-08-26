@@ -65,6 +65,24 @@ def getAllHours(formatsHours):
       hoursArray.append(showtime['Time'])
   return hoursArray
 
+
+def normalize(s):
+    replacements = (
+        ("á", "a"),
+        ("é", "e"),
+        ("í", "i"),
+        ("ó", "o"),
+        ("ú", "u"),
+        ("Á", "A"),
+        ("É", "E"),
+        ("Í", "I"),
+        ("Ó", "O"),
+        ("Ú", "U"),
+    )
+    for a, b in replacements:
+        s = s.replace(a, b).replace(a.upper(), b.upper())
+    return s
+
 GlobalData = pd.DataFrame(columns=['Country',
                                    'CityKey',
                                    'CityName',
@@ -103,8 +121,8 @@ def DataCollectCinepolis():
           GlobalData.at[indexLLenado,'CityName'] = MovieRow['CityName']
           GlobalData.at[indexLLenado,'Id'] = MovieRow['Id']
           GlobalData.at[indexLLenado,'Key'] = MovieRow['Key']
-          GlobalData.at[indexLLenado,'Name'] = MovieRow['Name']
-          GlobalData.at[indexLLenado,'Title'] = MovieRow['Title']
+          GlobalData.at[indexLLenado,'Name'] = normalize(MovieRow['Name'])
+          GlobalData.at[indexLLenado,'Title'] = normalize(MovieRow['Title'])
           GlobalData.at[indexLLenado,'Hours'] = MovieRow['Hours'] 
           
           indexLLenado = indexLLenado + 1

@@ -1,8 +1,9 @@
 import time
 import random
+import pandas as pd
 
 from time import sleep
-from datetime import datetime
+from datetime import datetime, timedelta, date
 
 from selenium import webdriver
 from selenium.webdriver.firefox.service import Service
@@ -14,14 +15,13 @@ from selenium.webdriver.common.by import By
 
 
 BASE_URL = "https://cinemas.com.ni/cartelera/"
+MOVIES = []
 
 options = Options()
 driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()))
 driver.get(BASE_URL)
 driver.implicitly_wait(15)
 
-
-peliculas = ""
 now = datetime.now()
 hoy = now.strftime("%m/%d/%Y")
 # 1
@@ -115,6 +115,15 @@ for i, p in enumerate(peliculas):
                     print(horas2[conteo_hora].text)  ########### hora
                     url = driver.current_url  ############ url
                     print(url)
+                    data = {
+                        "title": tit,
+                        "hours": hor,
+                        "Theatre Name": cin,
+                        "sala": sal,
+                        "x": x,
+                        "conteo": conteo_tata,
+                    }
+                    MOVIES.append(data)
                     conteo_hora = conteo_hora + 1
                     # insetar a la base
                 conteo_tata = conteo_tata + 1
@@ -127,58 +136,7 @@ for i, p in enumerate(peliculas):
 
 print("final")
 print(conteo)
+
+df = pd.DataFrame(MOVIES)
+df.to_csv(f"Cinemas_{date.today()}.csv", index=False)
 driver.quit()
-
-
-def obtenerAsistencias(url, x, conteo_tata, hora, driver):
-    driver.get(url)
-    driver.find_element(by=By.XPATH, value='//*[@id="cnm_mov"]').click()
-    driver.find_element(
-        by=By.XPATH, value='//*[@id="cnm_mov"]/option[{}]'.format(x)
-    ).click()
-    sleep(random.uniform(2.0, 4.0))
-    tata2 = driver.find_elements(
-        by=By.CSS_SELECTOR,
-        value="div.col-12.col-sm-4.col-md-6.col-lg-4.list-horarios.d1.show-tandas",
-    )
-    horas2 = tata2[conteo_tata].find_elements(by=By.XPATH, value="./div/a")
-
-    for h in horas2:
-        if h.text == hora:
-            h.click()
-            sleep(random.uniform(2.0, 4.0))
-            driver.switch_to.window(driver.window_handles[1])
-            driver.find_element(
-                by=By.XPATH, value='//*[@id="standard"]/ul/li[1]/span/button[2]'
-            ).click()
-            sleep(random.uniform(2.0, 4.0))
-            driver.find_element(
-                by=By.XPATH, value='//*[@id="ibtnOrderTickets"]'
-            ).click()
-            sleep(random.uniform(2.0, 4.0))
-            sala_cine = driver.find_element(
-                by=By.XPATH, value='//*[@id="objSeatPlan"]/div'
-            )
-            asistencias = sala_cine.find_elements(
-                by=By.XPATH, value="//*[contains(@src,'./Images/Seating/25/sold.png')]"
-            )
-            vacios = sala_cine.find_elements(
-                by=By.XPATH,
-                value="//*[contains(@src,'./Images/Seating/25/standard_available.png')]",
-            )
-            print(len(asistencias))
-            values = (len(asistencias), len(vacios), url, x, conteo_tata, hora)
-            print(cursor.execute(sql, values))
-            driver.close()
-    driver.quit()
-
-
-import schedule
-import time
-from datetime import datetime, timedelta
-
-schedule.every(1).minutes.do(job)
-
-while True:
-    schedule.run_pending()
-    time.sleep(1)

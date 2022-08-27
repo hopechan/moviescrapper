@@ -16,6 +16,10 @@ Flask-MySQLdb = "^1.0.1"
 art = "^5.7"
 rich = "^12.5.1"
 text2art = "^0.2.0"
+schedule = "^1.1.0"
+openpyxl = "^3.0.10"
+xlrd = "^2.0.1"
+fuzzywuzzy = "^0.18.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

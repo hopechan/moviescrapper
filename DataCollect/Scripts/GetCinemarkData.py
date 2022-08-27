@@ -57,10 +57,8 @@ def build_movie(movies, cinema, country):
     for movie in movies["movies"]:
         data = {
             "Theatre Name": cinema,
-            "Country": country,
             "title": movie["title"],
-            "rating": movie["rating"],
-            "film_HO_code": movie["film_HO_code"],
+            "Country": country,
         }
         data.update(get_total_funciones(movie["movie_versions"]))
         MOVIES.append(data)
@@ -85,5 +83,7 @@ def get_cinemark_data():
     # filename must have date
     df.to_csv(f"Cinemark_{date.today()}.csv", index=False)
 
+    print(f"Datos de Cinemark exportados a Cinemark_{date.today()}.csv")
 
-get_cinemark_data()
+
+# get_cinemark_data()

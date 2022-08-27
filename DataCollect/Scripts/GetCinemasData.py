@@ -116,12 +116,9 @@ for i, p in enumerate(peliculas):
                     url = driver.current_url  ############ url
                     print(url)
                     data = {
-                        "title": tit,
-                        "hours": hor,
                         "Theatre Name": cin,
-                        "sala": sal,
-                        "x": x,
-                        "conteo": conteo_tata,
+                        "Country": "NI",
+                        "title": tit,
                     }
                     MOVIES.append(data)
                     conteo_hora = conteo_hora + 1
@@ -133,10 +130,7 @@ for i, p in enumerate(peliculas):
         print("La pelicula no tiene horarios")
         driver.back()
 
-
-print("final")
-print(conteo)
-
 df = pd.DataFrame(MOVIES)
 df.to_csv(f"Cinemas_{date.today()}.csv", index=False)
+print(f"Datos guardados en el archivo Cinemas_{date.today()}.csv")
 driver.quit()

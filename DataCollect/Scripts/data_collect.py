@@ -2,7 +2,8 @@ import os
 import pandas as pd
 
 import GetCinemarkData as cinemark
-import GetCinepolisData as cinepolis
+
+# import GetCinepolisData as cinepolis
 
 # import GetCinepolisData as cinepolis
 
@@ -14,12 +15,12 @@ from fuzzywuzzy import fuzz, process
 
 print(text2art("Recoleccion de datos"))
 
-# print("Obteniendo datos de Cinemark")
-# try:
-#     cinemark.get_cinemark_data()
-# except Exception as e:
-#     print(e)
-#     print("Error al obtener datos de Cinemark")
+print("Obteniendo datos de Cinemark")
+try:
+    cinemark.get_cinemark_data()
+except Exception as e:
+    print(e)
+    print("Error al obtener datos de Cinemark")
 
 # print("Obteniendo datos de Cinepolis")
 # try:
@@ -28,12 +29,12 @@ print(text2art("Recoleccion de datos"))
 #     print(e)
 #     print("Error al obtener datos de Cinepolis")
 
-# print("Obteniendo datos de Cinemas")
-# try:
-#     import GetCinemasData as cinemas
-# except Exception as e:
-#     print(e)
-#     print("Error al obtener datos de Cinemas")
+print("Obteniendo datos de Cinemas")
+try:
+    import GetCinemasData as cinemas
+except Exception as e:
+    print(e)
+    print("Error al obtener datos de Cinemas")
 
 # read data from csv
 cinemark_data = pd.read_csv(f"Cinemark_{date.today()}.csv")
@@ -41,7 +42,7 @@ cinemas_data = pd.read_csv(f"Cinemas_{date.today()}.csv")
 # cinepolis_data = pd.read_csv("Cinepolis-sv-Data-Collection-26.csv")
 
 # merge data
-merged_data =  pd.concat([cinemark_data, cinemas_data])
+merged_data = pd.concat([cinemark_data, cinemas_data])
 print(merged_data)
 
 # export to csv
@@ -129,7 +130,7 @@ for index, row in origin_data.iterrows():
             "Title": title,
             "Circuit": circuit,
             "City": city,
-            "admissions": admission   
+            "admissions": admission,
         }
 
         final_data.append(data)
@@ -139,7 +140,7 @@ for index, row in origin_data.iterrows():
             "Title": title,
             "Circuit": circuit,
             "City": city,
-            "admissions": admission   
+            "admissions": admission,
         }
         failed_data.append(data)
 

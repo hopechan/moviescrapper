@@ -2,7 +2,7 @@ import json
 
 from datetime import date
 
-from flask import Flask, jsonify, send_file
+from flask import Flask, jsonify, send_file, render_template
 from flask_mysqldb import MySQL
 
 
@@ -21,7 +21,7 @@ mysql = MySQL(app)
 
 @app.route("/", methods=["GET"])
 def home():
-    return "Movie Database"
+    return render_template("index.html")
 
 
 # ruta principal para obtener los datos de la base de datos

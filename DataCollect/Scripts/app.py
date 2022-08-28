@@ -1,6 +1,10 @@
 import json
-from flask import Flask, jsonify
+
+from datetime import date
+
+from flask import Flask, jsonify, send_file
 from flask_mysqldb import MySQL
+
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
@@ -27,6 +31,23 @@ def index():
     cur.execute("SELECT * FROM cine")
     data = cur.fetchall()
     return jsonify(data)
+
+
+@app.route("/api/cines/data_collect", methods=["GET"])
+def collect_data():
+    import data_collect
+
+    return "Data Collected"
+
+
+# make an endpoint to dowloand Data.csv
+@app.route("/api/cines/download", methods=["GET"])
+def download():
+    return send_file(
+        f"Datos_{date.today()}.csv",
+        download_name=f"Datos_{date.today()}.csv",
+        as_attachment=True,
+    )
 
 
 app.run()

@@ -2,6 +2,7 @@ import os
 import pandas as pd
 
 import GetCinemarkData as cinemark
+import GetCinepolisData as cinepolis
 
 # import GetCinepolisData as cinepolis
 
@@ -13,34 +14,35 @@ from fuzzywuzzy import fuzz, process
 
 print(text2art("Recoleccion de datos"))
 
-print("Obteniendo datos de Cinemark")
-try:
-    cinemark.get_cinemark_data()
-except Exception as e:
-    print(e)
-    print("Error al obtener datos de Cinemark")
+# print("Obteniendo datos de Cinemark")
+# try:
+#     cinemark.get_cinemark_data()
+# except Exception as e:
+#     print(e)
+#     print("Error al obtener datos de Cinemark")
 
-print("Obteniendo datos de Cinepolis")
-try:
-    cinepolis.DataCollectCinepolis()
-except Exception as e:
-    print(e)
-    print("Error al obtener datos de Cinepolis")
+# print("Obteniendo datos de Cinepolis")
+# try:
+#     cinepolis.DataCollectCinepolis()
+# except Exception as e:
+#     print(e)
+#     print("Error al obtener datos de Cinepolis")
 
-print("Obteniendo datos de Cinemas")
-try:
-    import GetCinemasData as cinemas
-except Exception as e:
-    print(e)
-    print("Error al obtener datos de Cinemas")
+# print("Obteniendo datos de Cinemas")
+# try:
+#     import GetCinemasData as cinemas
+# except Exception as e:
+#     print(e)
+#     print("Error al obtener datos de Cinemas")
 
 # read data from csv
 cinemark_data = pd.read_csv(f"Cinemark_{date.today()}.csv")
 cinemas_data = pd.read_csv(f"Cinemas_{date.today()}.csv")
-cinepolis_data = pd.read_csv("Cinepolis-sv-Data-Collection-26.csv")
+# cinepolis_data = pd.read_csv("Cinepolis-sv-Data-Collection-26.csv")
 
 # merge data
-merged_data = pd.merge(cinemark_data, cinemas_data, on="title")
+merged_data =  pd.concat([cinemark_data, cinemas_data])
+print(merged_data)
 
 # export to csv
 merged_data.to_csv(f"Merged_{date.today()}.csv", index=False)
@@ -73,6 +75,9 @@ for file in os.listdir("original_data"):
 
 origin_data = pd.concat(original_data)
 
+final_data = []
+failed_data = []
+
 # use fuzzywuzzy to find the best match bewteen original data and merged data
 for index, row in origin_data.iterrows():
     # get the title of the movie
@@ -93,6 +98,7 @@ for index, row in origin_data.iterrows():
 
     # if the best match is greater than 80%
     if best_match[1] > 80:
+        # import pdb; pdb.set_trace()
         # print the best match
         print(f"{title} - {theatre} - {best_match[0]} - {best_match[1]}")
         # print the best match from the original data
@@ -118,5 +124,27 @@ for index, row in origin_data.iterrows():
             f"{title}) - {theatre} - {best_match[0]} - {best_match[1]} - {best_match_original[0]} - {best_match_original[1]}"
         )
 
+        data = {
+            "Theater Name": theatre,
+            "Title": title,
+            "Circuit": circuit,
+            "City": city,
+            "admissions": admission   
+        }
+
+        final_data.append(data)
+    else:
+        data = {
+            "Theater Name": theatre,
+            "Title": title,
+            "Circuit": circuit,
+            "City": city,
+            "admissions": admission   
+        }
+        failed_data.append(data)
+
 # export to csv
-# origin_data.to_csv(f"Datos_{date.today()}.csv", index=False)
+df_final = pd.DataFrame(final_data)
+df_failed = pd.DataFrame(failed_data)
+df_final.to_csv(f"Datos_{date.today()}.csv", index=False)
+df_failed.to_csv(f"Datos_fallidos_{date.today()}")

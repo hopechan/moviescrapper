@@ -58,11 +58,11 @@ for file in os.listdir("original_data"):
     # remove first 2 column
     df = df.iloc[:, 2:]
 
-    # remove from fifth column to 31th column
-    df = df.drop(df.columns[4:31], axis=1)
+    # remove from sixth column to 31th column
+    df = df.drop(df.columns[5:31], axis=1)
 
     # remove from 5th column to end
-    df = df.drop(df.columns[5:], axis=1)
+    df = df.drop(df.columns[6:], axis=1)
 
     # give column names
     df.columns = [
@@ -71,8 +71,10 @@ for file in os.listdir("original_data"):
         "City",
         "Circuit",
         "admission",
+        "Recaudacion",
     ]
     original_data.append(df)
+print(original_data)
 
 origin_data = pd.concat(original_data)
 
@@ -91,6 +93,8 @@ for index, row in origin_data.iterrows():
     circuit = row["Circuit"]
     # get the admission of the theatre
     admission = row["admission"]
+    # get the recaudacion of the theatre
+    recaudacion = row["Recaudacion"]
 
     # get the best match from the merged data
     best_match = process.extractOne(title, merged_data["title"])
@@ -99,38 +103,26 @@ for index, row in origin_data.iterrows():
 
     # if the best match is greater than 80%
     if best_match[1] > 80:
-        # import pdb; pdb.set_trace()
-        # print the best match
-        print(f"{title} - {theatre} - {best_match[0]} - {best_match[1]}")
-        # print the best match from the original data
-        print(
-            f"{title} - {theatre} - {best_match_original[0]} - {best_match_original[1]}"
-        )
-        # print the city of the theatre
-        print(f"{theatre} - {city}")
-        # print the circuit of the theatre
-        print(f"{theatre} - {circuit}")
-        # print the admission of the theatre
-        print(f"{theatre} - {admission}")
-        # print the difference between the best match and the best match from the original data
-        print(
-            f"{title} - {theatre} - {best_match[0]} - {best_match[1]} - {best_match_original[0]} - {best_match_original[1]}"
-        )
-        # print the difference between the best match and the best match from the original data
-        print(
-            f"{title} - {theatre} - {best_match[0]} - {best_match[1]} - {best_match_original[0]} - {best_match_original[1]}"
-        )
-        # print the difference between the best match and the best match from the original data
-        print(
-            f"{title}) - {theatre} - {best_match[0]} - {best_match[1]} - {best_match_original[0]} - {best_match_original[1]}"
-        )
+        # print hours of the theatre
+        print(f"{theatre} - {title} - {city} - {circuit} - {admission} - {recaudacion}")
+
+        # get hours from merged data if NAN replace with "Sin Horarios"
+        try:
+            hours = merged_data[merged_data["title"] == best_match[0]]["hours"].values[
+                0
+            ]
+        except Exception as e:
+            hours = "Sin Horarios"
+        print(hours)
 
         data = {
             "Theater Name": theatre,
             "Title": title,
             "Circuit": circuit,
             "City": city,
-            "admissions": admission,
+            "Recaudacion": admission,
+            "admissions": recaudacion,
+            "horarios": hours,
         }
 
         final_data.append(data)
@@ -141,11 +133,14 @@ for index, row in origin_data.iterrows():
             "Circuit": circuit,
             "City": city,
             "admissions": admission,
+            "Recaudacion": recaudacion,
+            "horarios": hours,
         }
         failed_data.append(data)
 
 # export to csv
 df_final = pd.DataFrame(final_data)
 df_failed = pd.DataFrame(failed_data)
+print(text2art("Recoleccion de datos finalizada"))
 df_final.to_csv(f"Datos_{date.today()}.csv", index=False)
 df_failed.to_csv(f"Datos_fallidos_{date.today()}")

@@ -3,9 +3,9 @@ import pandas as pd
 
 import GetCinemarkData as cinemark
 
-# import GetCinepolisData as cinepolis
+#import GetCinepolisData as cinepolis
 
-# import GetCinepolisData as cinepolis
+import GetCinepolisData_v2 as cinepolis
 
 from datetime import date
 
@@ -22,16 +22,17 @@ except Exception as e:
     print(e)
     print("Error al obtener datos de Cinemark")
 
-# print("Obteniendo datos de Cinepolis")
-# try:
-#     cinepolis.DataCollectCinepolis()
-# except Exception as e:
-#     print(e)
-#     print("Error al obtener datos de Cinepolis")
+print("Obteniendo datos de Cinepolis")
+try:
+     cinepolis.DataCollectCinepolis()
+except Exception as e:
+     print(e)
+     print("Error al obtener datos de Cinepolis")
 
 print("Obteniendo datos de Cinemas")
 try:
-    import GetCinemasData as cinemas
+    print('Obtenido')
+    #import GetCinemasData as cinemas
 except Exception as e:
     print(e)
     print("Error al obtener datos de Cinemas")
@@ -39,10 +40,10 @@ except Exception as e:
 # read data from csv
 cinemark_data = pd.read_csv(f"Cinemark_{date.today()}.csv")
 cinemas_data = pd.read_csv(f"Cinemas_{date.today()}.csv")
-# cinepolis_data = pd.read_csv("Cinepolis-sv-Data-Collection-26.csv")
+cinepolis_data = pd.read_csv('Cinepolis_'+str(date.today())+'.csv')
 
 # merge data
-merged_data = pd.concat([cinemark_data, cinemas_data])
+merged_data = pd.concat([cinemark_data,cinepolis_data, cinemas_data])
 print(merged_data)
 
 # export to csv

@@ -46,9 +46,9 @@ def get_total_funciones(movie_versions):
             hours.append(session["hour"])
 
         data = {
-            "funciones": len(version["sessions"]),
-            "total_seats": total_seats,
-            "hours": hours,
+            "Functions": len(version["sessions"]),
+            #"total_seats": total_seats,
+            "Hours": hours,
         }
     return data
 
@@ -56,9 +56,11 @@ def get_total_funciones(movie_versions):
 def build_movie(movies, cinema, country):
     for movie in movies["movies"]:
         data = {
-            "Theatre Name": cinema,
-            "title": movie["title"],
             "Country": country,
+            "Theatre Name": cinema,
+            "Title": movie["title"],
+            "City": 'Unknown',
+            "Circuit": 'Cinemark'           
         }
         data.update(get_total_funciones(movie["movie_versions"]))
         MOVIES.append(data)

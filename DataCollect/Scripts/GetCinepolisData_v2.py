@@ -84,13 +84,12 @@ def normalize(s):
     return s
 
 GlobalData = pd.DataFrame(columns=['Country',
-                                   'CityKey',
-                                   'CityName',
-                                   'Id',
-                                   'Key',
-                                   'Name',
+                                   'Theatre Name',
                                    'Title',
-                                   'Hours'])#Creando nuevo dataframe para el nuevo Archivo
+                                   'City',
+                                   'Circuit',
+                                   'Functions',
+                                   'Hours'])
                                    
 
 
@@ -117,16 +116,15 @@ def DataCollectCinepolis():
 
         for index, MovieRow in MoviesData.iterrows():
           GlobalData.at[indexLLenado,'Country'] = country
-          GlobalData.at[indexLLenado,'CityKey'] = MovieRow['CityKey']
-          GlobalData.at[indexLLenado,'CityName'] = MovieRow['CityName']
-          GlobalData.at[indexLLenado,'Id'] = MovieRow['Id']
-          GlobalData.at[indexLLenado,'Key'] = MovieRow['Key']
-          GlobalData.at[indexLLenado,'Name'] = normalize(MovieRow['Name'])
+          GlobalData.at[indexLLenado,'Theatre Name'] = normalize((MovieRow['Name'])[10:])
           GlobalData.at[indexLLenado,'Title'] = normalize(MovieRow['Title'])
+          GlobalData.at[indexLLenado,'City'] = MovieRow['CityName']
+          GlobalData.at[indexLLenado,'Circuit'] = 'Cinepolis'
+          GlobalData.at[indexLLenado,'Functions'] =  len(MovieRow['Hours'])
           GlobalData.at[indexLLenado,'Hours'] = MovieRow['Hours'] 
           
           indexLLenado = indexLLenado + 1
 
-    GlobalData.to_csv('Cinepolis-'+ "Generico" +'-Data-Collection-'+str(date.today().day)+'.csv', sep=',', encoding='utf-8', index=False)
+    GlobalData.to_csv('Cinepolis_'+str(date.today())+'.csv', sep=',', encoding='utf-8', index=False)
 
 DataCollectCinepolis()

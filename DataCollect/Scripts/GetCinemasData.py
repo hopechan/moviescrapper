@@ -1,3 +1,4 @@
+from this import d
 import time
 import random
 import pandas as pd
@@ -17,6 +18,12 @@ from selenium.webdriver.common.by import By
 BASE_URL = "https://cinemas.com.ni/cartelera/"
 MOVIES = []
 
+CityBySalesBranch = [
+  {"Nombre":'GALERÍAS',"Ciudad":"Managua,Nicaragua"},
+  {"Nombre":'PLAZA INTER',"Ciudad":"Managua,Nicaragua"},
+  {"Nombre":'BELLO HORIZONTE', "Ciudad":"Managua,Nicaragua"},
+  {"Nombre":'MASAYA',"Ciudad":"Masaya,Nicaragua"}
+  ]
 options = Options()
 driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()))
 driver.get(BASE_URL)
@@ -43,6 +50,24 @@ class Funcion:
     def print_hora(self):
         print(self.hora)
 
+def buscarCiudad(Sucursal):
+    for NombreSucursal in CityBySalesBranch:
+        if NombreSucursal.__eq__(Sucursal):
+            return NombreSucursal["Ciudad"]
+
+def convert24(str1): 
+    if str1[-2:] == "AM" and str1[:2] == "12": 
+        return "00" + str1[2:-2] 
+
+    elif str1[-2:] == "AM": 
+        return str1[:-2] 
+
+    elif str1[-2:] == "PM" and str1[:2] == "12": 
+        return str1[:-2] 
+          
+    else: 
+        return str(int(str1[:2]) + 12) 
+    
 
 peliculas = driver.find_elements(by=By.XPATH, value="//section/div/div/div/a[@class]")
 
@@ -51,7 +76,7 @@ titulo = ""
 funciones = Funcion()
 
 for i, p in enumerate(peliculas):
-    sleep(random.uniform(2.0, 4.0))
+    sleep(2)
     WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, "a.btn-red".replace(" ", ".")))
     )
@@ -59,7 +84,7 @@ for i, p in enumerate(peliculas):
     nuevo = driver.find_elements(by=By.XPATH, value="//section/div/div/div/a[@class]")
     nuevo[conteo].click()
     conteo = conteo + 1
-    sleep(random.uniform(2.0, 4.0))
+    sleep(1.0)
 
     # datos dentro de la pagina de funciones
     try:
@@ -83,7 +108,7 @@ for i, p in enumerate(peliculas):
             driver.find_element(
                 by=By.XPATH, value='//*[@id="cnm_mov"]/option[{}]'.format(x)
             ).click()
-            sleep(random.uniform(2.0, 4.0))
+            sleep(1.0)
 
             tata = driver.find_elements(
                 by=By.CSS_SELECTOR,
@@ -104,26 +129,37 @@ for i, p in enumerate(peliculas):
                 print(sal)
                 print(sala.text)  ############## sala
                 conteo_hora = 0
+                print(horas)
+                HorariosPelicula = []
                 for h in enumerate(horas):
                     #### pobtencion de las asistencias
                     #######guardar conteo_tata
                     horas2 = tata2[conteo_tata].find_elements(
                         by=By.XPATH, value="./div/a"
                     )
+                    
                     hor = horas2[conteo_hora].text
+                    HorariosPelicula.append(horas2[conteo_hora].text)
                     print(hor)
                     print(horas2[conteo_hora].text)  ########### hora
                     url = driver.current_url  ############ url
                     print(url)
-                    data = {
-                        "Theatre Name": cin,
-                        "Country": "NI",
-                        "title": tit,
-                    }
-                    MOVIES.append(data)
+                    
                     conteo_hora = conteo_hora + 1
                     # insetar a la base
                 conteo_tata = conteo_tata + 1
+
+                data = {
+                        "Country": "ni",
+                        "Theatre Name": cin,
+                        "Title": tit,
+                        "City": buscarCiudad(cin),
+                        "Circuit": 'Cinemas',
+                        "Functions": len(HorariosPelicula),
+                        "Hours": HorariosPelicula,
+                    }
+                MOVIES.append(data)
+                print(HorariosPelicula)
         driver.back()
 
     except Exception:

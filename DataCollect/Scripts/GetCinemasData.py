@@ -126,6 +126,7 @@ for i, p in enumerate(peliculas):
                     continue
                 horas = tata2[conteo_tata].find_elements(by=By.XPATH, value="./div/a")
                 sal = sala.text
+                # import pdb; pdb.set_trace()
                 print(sal)
                 print(sala.text)  ############## sala
                 conteo_hora = 0

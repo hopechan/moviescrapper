@@ -56,7 +56,7 @@ def get_total_funciones(movie_versions):
 def build_movie(movies, cinema, country):
     for movie in movies["movies"]:
         data = {
-            "Country": country,
+            "Country": country.lower(),
             "Theatre Name": cinema,
             "Title": movie["title"],
             "City": 'Unknown',

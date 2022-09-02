@@ -15,26 +15,26 @@ from fuzzywuzzy import fuzz, process
 
 print(text2art("Recoleccion de datos"))
 
-# print("Obteniendo datos de Cinemark")
-# try:
-#     cinemark.get_cinemark_data()
-# except Exception as e:
-#     print(e)
-#     print("Error al obtener datos de Cinemark")
+print("Obteniendo datos de Cinemark")
+try:
+    cinemark.get_cinemark_data()
+except Exception as e:
+    print(e)
+    print("Error al obtener datos de Cinemark")
 
-# print("Obteniendo datos de Cinepolis")
-# try:
-#     cinepolis.DataCollectCinepolis()
-# except Exception as e:
-#     print(e)
-#     print("Error al obtener datos de Cinepolis")
+print("Obteniendo datos de Cinepolis")
+try:
+    cinepolis.DataCollectCinepolis()
+except Exception as e:
+    print(e)
+    print("Error al obtener datos de Cinepolis")
 
-# print("Obteniendo datos de Cinemas")
-# try:
-#     print("Obtenido")
-#     import GetCinemasData as cinemas
-# except Exception as e:
-#     print(e)
+print("Obteniendo datos de Cinemas")
+try:
+    print("Obtenido")
+    import GetCinemasData as cinemas
+except Exception as e:
+    print(e)
 #     print("Error al obtener datos de Cinemas")
 
 # read data from csv
@@ -121,14 +121,16 @@ for index, row in origin_data.iterrows():
 
     # get the best match from the country data
     try:
-        best_match_country = process.extractOne(country, merged_data["Country"])
+        best_match_country = process.extractOne(
+            country, merged_data["Country"])
     except Exception as e:
         print(e)
         print(f"Error al obtener datos de Country pais {country}")
 
     best_match_circuit = process.extractOne(circuit, merged_data["Circuit"])
 
-    best_match_theather = process.extractOne(theatre, merged_data["Theatre Name"])
+    best_match_theather = process.extractOne(
+        theatre, merged_data["Theatre Name"])
 
     # if the best match is greater than 80% and the country, circuit, theather is the same
     if (
